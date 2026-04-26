@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0">
+  <header>
+    <name>Borewell Game</name>
+    <description>The borewell game. Each player decides how aggressively to pump water from a shared underground aquifer. The aquifer recharges naturally, but slowly. Watch what happens when everyone pumps as much as they want — and try turning off the recharge to see how dependent the system is on something we usually ignore.</description>
+  </header>
+  <sim_specs>
+    <start>0</start>
+    <stop>120</stop>
+    <dt>0.25</dt>
+    <time_units>Month</time_units>
+  </sim_specs>
+  <model>
+    <variables>
+      <stock name="chart_aquifer_level">
+        <eqn>1000</eqn>
+        <inflow>toggle_recharge</inflow>
+        <outflow>toggle_groundwater_pumping</outflow>
+        <doc>The total volume of water stored underground, in cubic meters. When this reaches zero, the aquifer is depleted.</doc>
+        <units>m3</units>
+        <range min="0" max="2000"/>
+      </stock>
+
+      <flow name="toggle_recharge">
+        <eqn>param_rainfall * 0.3</eqn>
+        <doc>Water seeping back into the aquifer from rainfall each month. Turn this off to see how dependent the system is on natural recharge.</doc>
+        <units>m3/Month</units>
+      </flow>
+
+      <flow name="toggle_groundwater_pumping">
+        <eqn>param_pumping_rate</eqn>
+        <doc>Water pumped out of the aquifer each month by the community. Turn this off to see the aquifer recover naturally.</doc>
+        <units>m3/Month</units>
+      </flow>
+
+      <aux name="param_rainfall">
+        <eqn>100</eqn>
+        <range min="0" max="300" step="10"/>
+        <doc>Monthly rainfall over the catchment area. More rainfall means more natural recharge to the aquifer.</doc>
+        <units>mm/Month</units>
+      </aux>
+
+      <aux name="param_pumping_rate">
+        <eqn>40</eqn>
+        <range min="0" max="150" step="5"/>
+        <doc>How much water the community pumps from the aquifer each month. The higher this is, the faster the aquifer drains.</doc>
+        <units>m3/Month</units>
+      </aux>
+
+      <aux name="recharge_fraction">
+        <eqn>0.3</eqn>
+        <doc>The fraction of rainfall that percolates underground and replenishes the aquifer. Determined by soil type and land cover.</doc>
+        <units>dimensionless</units>
+      </aux>
+    </variables>
+    <views>
+      <view>
+        <stock name="chart_aquifer_level" x="400" y="210" width="90" height="45"/>
+        <flow name="toggle_recharge" x="220" y="210">
+          <pts>
+            <pt x="90" y="210"/>
+            <pt x="355" y="210"/>
+          </pts>
+        </flow>
+        <flow name="toggle_groundwater_pumping" x="580" y="210">
+          <pts>
+            <pt x="445" y="210"/>
+            <pt x="710" y="210"/>
+          </pts>
+        </flow>
+        <aux name="param_rainfall" x="150" y="340"/>
+        <aux name="param_pumping_rate" x="580" y="340"/>
+        <aux name="recharge_fraction" x="310" y="340"/>
+        <connector uid="1" from="param_rainfall" to="toggle_recharge"/>
+        <connector uid="2" from="recharge_fraction" to="toggle_recharge"/>
+        <connector uid="3" from="param_pumping_rate" to="toggle_groundwater_pumping"/>
+      </view>
+    </views>
+  </model>
+</xmile>

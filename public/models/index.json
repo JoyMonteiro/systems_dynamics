@@ -1,0 +1,13 @@
+{
+  "models": [
+    {
+      "id": "borewell",
+      "title": "The Borewell Game",
+      "subtitle": "What happens when everyone drills a little deeper?",
+      "file": "borewell.xmile",
+      "description_file": "borewell.md",
+      "difficulty": "intermediate",
+      "tags": ["water", "commons", "feedback"]
+    }
+  ]
+}
